@@ -20,13 +20,13 @@ Quiz Tablice PL to interaktywna aplikacja webowa, która pozwala użytkownikom s
 ## 📷 Zrzuty ekranu
 
 ### Strona główna - wybór trybu gry
-![Strona główna](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/pick.png)
+![Strona główna](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/index.png)
+
+### Wybór województwa
+![Wybór województwa](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/pick.png)
 
 ### Rozgrywka
 ![Rozgrywka](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/game.png)
-
-### Wybór województwa
-![Wybór województwa](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/index.png)
 
 ### Koniec gry
 ![Koniec gry](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/end.png)
@@ -54,11 +54,8 @@ Jeśli chcesz pomóc w rozwoju projektu:
 
 ## 📝 Licencja
 
-Ten projekt jest udostępniany na licencji MIT. Szczegółowe informacje można znaleźć w pliku [LICENSE](LICENSE).
+Ten projekt jest udostępniany na licencji MIT
 
-## 📞 Kontakt
-
-Link do projektu: [https://github.com/budziun/quiz-tablice-pl](https://github.com/budziun/quiz-tablice-pl)
 
 ---
 
