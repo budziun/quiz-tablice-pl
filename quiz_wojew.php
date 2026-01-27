@@ -1,3 +1,6 @@
+<?php
+        session_start();
+        ?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -6,6 +9,8 @@
   <title>QUIZ TABLICE WOJEWÓDZTWO</title>
   <link rel="stylesheet" href="style.css"> 
   <script src="js/info.js"></script>
+  <script src="js/settings.js"></script>
+  <link rel="icon" type="image/jpeg" href="images/l1.png">
 </head>
 <body>
   <div class="header">
@@ -13,18 +18,29 @@
         <a href="index.php"><img src="images/logo.jpg" alt="Logo"></a>
     </div>
     <div class="links">
-    <img src="images/git.png" class="git" alt="github- bdzn">
-    <script src="js/git.js"></script>
-        <a href="index.php">
-            <img src="images/home.png" class="home" alt="home"></a>
-        <a href="#" id="infoLink">
-            <img src="images/info.png" class="info" alt="info"></a>
+        <div class="vol-container" id="volContainer">
+             <input type="range" id="volSlider" min="0" max="1" step="0.01" value="0.5" class="vol-slider">
+             
+             <div class="icon-wrapper">
+                <img src="images/vol.png" id="volIcon" class="vol-icon" alt="Vol">
+             </div>
+        </div>
+
+        <a href="#" id="themeBtn" class="link-icon" title="Zmień motyw">
+             <img src="images/moon.png" class="theme-icon" alt="Theme" style="width: 26px; height: 26px;">
+        </a>
+
+        <a href="https://github.com/budziun/quiz-tablice-pl" target="_blank" class="link-icon">
+            <img src="images/git.png" class="git" alt="github">
+        </a>
+        <a href="#" id="infoLink" class="link-icon">
+            <img src="images/info.png" class="info" alt="info">
+        </a>
     </div>
   </div>
   <div class="main">
     <div class="image-container">
     <?php
-        session_start();
         if (isset($_GET['wojewodztwo'])) {
             $_SESSION['wojewodztwo'] = $_GET['wojewodztwo'];
         }
@@ -99,14 +115,19 @@
     ?>
     </div>
     <div class="form-container">
-      <form id="answerForm">
+      <form action="#" method="post" id="answerForm">
         <div>
           <p id="points">Twoja liczba punktów: <?php echo $_SESSION['points']; ?></p>
-          <div class="form-container">
-          <input type="text" id="text" name="text" required oninput="handleInput(this)" autocomplete="off" data-wojewodztwo="<?php echo htmlspecialchars($wojewodztwo); ?>">
-          <button type="submit">Wyślij</button>
-          <div id="autocomplete-list"></div>
+          
+          <div class="game-row">
+              <div class="input-group">
+                  <input type="text" id="text" name="text" required oninput="handleInput(this)" autocomplete="off" placeholder="Wpisz tablicę...">
+                  <div id="autocomplete-list"></div>
+              </div>
+              <button type="submit">Wyślij</button>
           </div>
+          
+          <div id="alreadyAnswered" style="display: none;">Już próbowałeś odpowiedzieć na to pytanie.</div>
         </div>
       </form>
       
@@ -115,7 +136,7 @@
           <h1>Koniec gry</h1>
           <p>Nie udało się, spróbuj ponownie!</p>
           <p class="scorelose">Twój wynik wynosi: <b><?php echo $_SESSION['points']; ?></b></p>
-          <p class="scorelose">Poprawna odpowiedź to: <b><?php echo $answer; ?></b></p>
+          <p class="scorelose">Poprawna odpowiedź to: <b><span id="correctAnswerDisplay"></span></b></p>
           <button onclick="playAgain()" id="btnHome">Zagraj ponownie</button>
         </div>
       </div>
@@ -139,14 +160,17 @@
   </div>
 
   <script>
+    // === SEKCJA AUTOCOMPLETE ===
     function autocomplete(input) {
         const xhr = new XMLHttpRequest();
         const wojewodztwo = input.getAttribute('data-wojewodztwo') || '';
         
         xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                const response = JSON.parse(this.responseText);
-                showAutocomplete(input, response);
+                try {
+                    const response = JSON.parse(this.responseText);
+                    showAutocomplete(input, response);
+                } catch(e) { }
             }
         };
 
@@ -187,32 +211,42 @@
         window.location.href = "index.php";
     }
 
+    // === GŁÓWNA LOGIKA GRY (POPRAWIONA OBSŁUGA JSON) ===
     document.getElementById("answerForm").addEventListener("submit", function(event) {
         event.preventDefault();
         
         const inputText = document.getElementById("text").value;
         const xhr = new XMLHttpRequest();
-        const badaudio = new Audio('sounds/bad_ans.wav');
-        const craudio = new Audio('sounds/correct_ans.wav');
         
         xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                console.log("Odpowiedź serwera:", this.responseText);
-                const response = this.responseText;
-                
-                if (response === "correct") {
-                    craudio.play();
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 1400);
-                } 
-                else if (response === "win") {
-                    document.getElementById("winn").style.display = "block";
-                    craudio.play();
-                }
-                else if (response === "incorrect") {
-                    document.getElementById("modal").style.display = "block";
-                    badaudio.play();
+                try {
+                    // Parsujemy odpowiedź JSON z serwera
+                    const response = JSON.parse(this.responseText);
+                    
+                    if (response.status === "correct") {
+                        playSound('correct'); 
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1400);
+                    } 
+                    else if (response.status === "win") {
+                        setTimeout(function() {
+                            document.getElementById("winn").style.display = "block";
+                            playSound('win'); 
+                        }, 500); 
+                    }
+                    else if (response.status === "incorrect") {
+                        // Wstawiamy poprawną odpowiedź, którą przysłał serwer
+                        document.getElementById("correctAnswerDisplay").innerText = response.correct_answer;
+                        
+                        setTimeout(function() {
+                            document.getElementById("modal").style.display = "block";
+                            playSound('wrong'); 
+                        }, 500);
+                    }
+                } catch (e) {
+                    console.error("Błąd parsowania JSON:", this.responseText);
                 }
             }
         };
@@ -221,6 +255,6 @@
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.send("text=" + encodeURIComponent(inputText));
     });
-  </script>
+</script>
 </body>
 </html>

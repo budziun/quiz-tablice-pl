@@ -13,19 +13,33 @@ session_destroy();
   <link rel="stylesheet" href="style.css"> 
   <script src="js/info.js"></script>
   <script src="js/git.js"></script>
+  <script src="js/settings.js"></script>
+  <link rel="icon" type="image/jpeg" href="images/l1.png">
 </head>
 <body>
-  <div class="header">
+ <div class="header">
     <div class="logo">
         <a href="index.php"><img src="images/logo.jpg" alt="Logo"></a>
     </div>
     <div class="links">
-	<img src="images/git.png" class="git" alt="github- bdzn">
-    <script src="js/git.js"></script>
-        <a href="index.php">
-            <img src="images/home.png" class="home" alt="home"></a>
-            <a href="#" id="infoLink">
-        <img src="images/info.png" class="info" alt="info"></a>
+        <div class="vol-container" id="volContainer">
+             <input type="range" id="volSlider" min="0" max="1" step="0.01" value="0.5" class="vol-slider">
+             
+             <div class="icon-wrapper">
+                <img src="images/vol.png" id="volIcon" class="vol-icon" alt="Vol">
+             </div>
+        </div>
+
+        <a href="#" id="themeBtn" class="link-icon" title="Zmień motyw">
+             <img src="images/moon.png" class="theme-icon" alt="Theme" style="width: 26px; height: 26px;">
+        </a>
+
+        <a href="https://github.com/budziun/quiz-tablice-pl" target="_blank" class="link-icon">
+            <img src="images/git.png" class="git" alt="github">
+        </a>
+        <a href="#" id="infoLink" class="link-icon">
+            <img src="images/info.png" class="info" alt="info">
+        </a>
     </div>
   </div>
   <div class="main"><form id="voivodeshipForm" action="game.php" method="POST" style="display: none;">

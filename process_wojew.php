@@ -1,7 +1,9 @@
 <?php
 session_start();
-$wojewodztwo = $_SESSION['wojewodztwo'] ?? '';
 require 'config.php';
+header('Content-Type: application/json');
+
+$wojewodztwo = $_SESSION['wojewodztwo'] ?? '';
 
 // Definicja zakresów ID dla województw
 $wojewodztwaZakresy = [
@@ -24,39 +26,31 @@ $wojewodztwaZakresy = [
 ];
 
 $conn = new mysqli($servername, $username, $password, $dbname);
-
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    echo json_encode(['status' => 'error']); exit;
 }
 
-if (!isset($_SESSION['answeredQuestions'])) {
-    $_SESSION['answeredQuestions'] = [];
-}
+if (!isset($_SESSION['answeredQuestions'])) $_SESSION['answeredQuestions'] = [];
+// Inicjalizacja punktów jeśli brak (dla bezpieczeństwa)
+if (!isset($_SESSION['points'])) $_SESSION['points'] = 0;
 
-// Sprawdzenie czy województwo istnieje w tablicy zakresów
 if (!isset($wojewodztwaZakresy[$wojewodztwo])) {
-    die("Nieprawidłowe województwo");
+    echo json_encode(['status' => 'error', 'message' => 'Wrong wojewodztwo']); exit;
 }
 
 $startId = $wojewodztwaZakresy[$wojewodztwo]['start'];
 $endId = $wojewodztwaZakresy[$wojewodztwo]['end'];
 
-// Bezpieczne zapytanie SQL z użyciem prepared statement
+// Liczba pytań
 $stmt = $conn->prepare("SELECT COUNT(*) as total FROM `tablice` WHERE wojewodztwo = ?");
 $stmt->bind_param("s", $wojewodztwo);
 $stmt->execute();
 $resultCount = $stmt->get_result();
+$totalQuestions = ($resultCount->num_rows > 0) ? $resultCount->fetch_assoc()['total'] : 0;
 
-if ($resultCount->num_rows > 0) {
-    $row = $resultCount->fetch_assoc();
-    $totalQuestions = $row['total'];
-} else {
-    $totalQuestions = 0;
-}
+$inputText = trim($_POST['text'] ?? '');
 
-$inputText = $_POST['text'];
-
-// Bezpieczne zapytanie dla sprawdzenia odpowiedzi
+// Sprawdzenie odpowiedzi
 $stmt = $conn->prepare("SELECT `answer` FROM `tablice` WHERE `id` = ?");
 $stmt->bind_param("i", $_SESSION['recordID']);
 $stmt->execute();
@@ -66,34 +60,40 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $correctAnswer = $row['answer'];
 
-    if ($_SESSION['points'] == $totalQuestions-1) {
-        session_unset();
-        session_destroy();
-        echo "win";
-        exit;
-    }
+    if (mb_strtolower($inputText) === mb_strtolower($correctAnswer)) {
+        if ($_SESSION['points'] >= $totalQuestions - 1) {
+            session_unset(); session_destroy();
+            echo json_encode(['status' => 'win']); exit;
+        }
 
-    if ($inputText === $correctAnswer) {
-        echo "correct";
         $_SESSION['points']++;
         $_SESSION['answeredQuestions'][] = $_SESSION['recordID'];
        
+        $safety = 0;
         do {
-            // Generowanie ID z odpowiedniego zakresu dla danego województwa
             $newRandomID = rand($startId, $endId);
-        } while (in_array($newRandomID, $_SESSION['answeredQuestions']));
+            $safety++;
+        } while (in_array($newRandomID, $_SESSION['answeredQuestions']) && $safety < 500);
 
         $_SESSION['recordID'] = $newRandomID;
+        echo json_encode(['status' => 'correct']);
         
     } else {
-        session_unset();
+        // Zapisujemy punkty przed wyczyszczeniem sesji!
+        $finalPoints = $_SESSION['points'];
+        
+        session_unset(); 
         session_destroy();
-        echo "incorrect"; 
+        
+        echo json_encode([
+            'status' => 'incorrect',
+            'correct_answer' => $correctAnswer,
+            'points' => $finalPoints
+        ]);
     }
 } else {
-    echo "No records found in the database.";
+    echo json_encode(['status' => 'error']);
 }
-
 $stmt->close();
 $conn->close();
 ?>
