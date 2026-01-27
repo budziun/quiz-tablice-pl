@@ -23,13 +23,13 @@ Quiz Tablice PL to interaktywna aplikacja webowa, która pozwala użytkownikom s
 ![Strona główna](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/refs/heads/main/screenshots/index.png)
 
 ### Wybór województwa
-![Wybór województwa](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/pick.png)
+![Wybór województwa](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/refs/heads/main/screenshots/pick.png)
 
 ### Rozgrywka
-![Rozgrywka](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/game.png)
+![Rozgrywka](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/refs/heads/main/screenshots/game.png)
 
 ### Koniec gry
-![Koniec gry](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/main/screenshots/end.png)
+![Koniec gry](https://raw.githubusercontent.com/budziun/quiz-tablice-pl/refs/heads/main/screenshots/end.png)
 
 ## 🚀 Demo
 
@@ -68,5 +68,6 @@ A quiz application about Polish vehicle registration plates. Test your knowledge
 This interactive web application allows users to test their knowledge of Polish license plates through various game modes, making it both educational and fun to recognize registration codes from different regions of Poland.
 
 Available at: [https://quiz-tablice-pl-production.up.railway.app/](https://quiz-tablice-pl-production.up.railway.app/)
+
 
 
