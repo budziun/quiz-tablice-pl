@@ -2,7 +2,7 @@
 
 Quiz aplikacja o polskich tablicach rejestracyjnych. Sprawdź swoją wiedzę na temat kodów tablic z całej Polski!
 
-[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://quiz-tablice-pl-production.up.railway.app/)
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://quiz-tablice.budziun.pl/)
 
 ## 📝 Opis
 
@@ -68,3 +68,4 @@ A quiz application about Polish vehicle registration plates. Test your knowledge
 This interactive web application allows users to test their knowledge of Polish license plates through various game modes, making it both educational and fun to recognize registration codes from different regions of Poland.
 
 Available at: [https://quiz-tablice-pl-production.up.railway.app/](https://quiz-tablice-pl-production.up.railway.app/)
+
