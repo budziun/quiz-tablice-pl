@@ -33,7 +33,7 @@ Quiz Tablice PL to interaktywna aplikacja webowa, która pozwala użytkownikom s
 
 ## 🚀 Demo
 
-Aplikacja jest dostępna online pod adresem: [https://quiz-tablice-pl-production.up.railway.app/](https://quiz-tablice-pl-production.up.railway.app/)
+Aplikacja jest dostępna online pod adresem: [https://quiz-tablice.budziun.pl/](https://quiz-tablice.budziun.pl/)
 
 ## 🛠️ Technologie
 
@@ -67,7 +67,7 @@ A quiz application about Polish vehicle registration plates. Test your knowledge
 
 This interactive web application allows users to test their knowledge of Polish license plates through various game modes, making it both educational and fun to recognize registration codes from different regions of Poland.
 
-Available at: [https://quiz-tablice-pl-production.up.railway.app/](https://quiz-tablice-pl-production.up.railway.app/)
+Available at: [https://quiz-tablice.budziun.pl/](https://quiz-tablice.budziun.pl/)
 
 
 
